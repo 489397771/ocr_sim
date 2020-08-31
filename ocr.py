@@ -24,6 +24,7 @@ from ctpn.lib.fast_rcnn.config import cfg
 from ctpn.lib.fast_rcnn.test import test_ctpn
 
 from idcard import IdCard
+from lawyerLicense import LQC
 
 tf.disable_v2_behavior()
 
@@ -193,8 +194,38 @@ def ocr_result(img_path):
     # print(results)
     idcard = IdCard(results)
     # print(idcard.res)
+    if len(idcard.res.keys()) < 3:
+        return {'error': '上传图片错误或者无法识别，请重新上传或手动填写'}
 
     return idcard.res
+
+
+def ocr_bar_license(img_path):
+
+    img = cv.imread(img_path)
+
+    angle = angle_detect(img=img)
+    im = Image.fromarray(img)
+    if angle == 90:
+        im = im.transpose(Image.ROTATE_90)
+    elif angle == 180:
+        im = im.transpose(Image.ROTATE_180)
+    elif angle == 270:
+        im = im.transpose(Image.ROTATE_270)
+    img = np.array(im)
+
+    print('predict start')
+
+    model = EndToEndPredict()
+    model.load()
+    results = model.get_answer(img)
+    # print(results)
+    # print('--' * 100)
+    lqc = LQC(results)
+    if len(lqc.res.keys()) < 3:
+        return {'error': '上传图片错误或者无法识别，请重新上传或手动填写'}
+
+    return lqc.res
 
 
 def main():
@@ -209,4 +240,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    # img_path = r'/Users/cipher/Documents/work/ocr_sim/ctpn/data/demo/5.jpeg'
+    img_path = r'/Users/cipher/Documents/work/ocr_sim/ctpn/data/1-1/21.jpg'
+
+    print(ocr_bar_license(img_path))

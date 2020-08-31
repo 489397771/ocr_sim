@@ -27,6 +27,7 @@ class IdCard(object):
         txt = txt.replace(' ', '')
         # 匹配身份证姓名
         res = re.findall("[\u4e00-\u9fa5]{1,4}", txt)
+
         if len(res) > 0:
             name['姓名'] = res[0].replace('姓名', '').replace('名', '')
             self.res.update(name)
@@ -42,6 +43,7 @@ class IdCard(object):
             txt = txt.replace(' ', '')
             # 民族汉
             res = re.findall(".*民.*族[\u4e00-\u9fa5]+", txt)
+
             if len(res) > 0:
                 nation["民族"] = res[0].split('族')[-1]
                 self.res.update(nation)
@@ -74,7 +76,7 @@ class IdCard(object):
             txt = txt.replace(' ', '')
             # 出生年月
             # res = re.findall('出生\d*年\d*月\d*', txt)
-            res = re.findall('\d*年\d*月\d*', txt)
+            res = re.findall(r'\d*年\d*月\d*', txt)
 
             if len(res) > 0:
                 birth['出生年月'] = res[0].replace('出生', '').replace('年', '-').replace('月', '-').replace('日', '')
@@ -90,17 +92,18 @@ class IdCard(object):
             txt = self.result[i]['text'].replace(' ', '').replace('，', '').replace('。', '')
             txt = txt.replace(' ', '')
             # 身份证号码
-            res = re.findall('号码\d*[X|x]', txt)
+            res = re.findall(r'号码\d*[X|x]', txt)
             # res += re.findall('号码\d*', txt)
-            res += re.findall('\d{16,18}', txt)
-            res += re.findall('.*s\d*[X|x]', txt)
-            res += re.findall('.*s\d.*', txt)
-            res += re.findall('.*O\d.*', txt)
-
+            res += re.findall(r'\d{16,18}', txt)
+            res += re.findall(r'.*s\d*[X|x]', txt)
+            res += re.findall(r'.*s\d.*', txt)
+            res += re.findall(r'.*O\d.*', txt)
+            res += re.findall(r'.*i\d.*', txt)
             if len(res) > 0:
-                No['身份证号码'] = res[0].replace('公民身份号码', '').replace('号码', '').replace('s', '3').replace('O', '0')
-                self.res.update(No)
-                break
+                if len(res[0]) >= 18:
+                    No['身份证号码'] = res[0].replace('公民身份号码', '').replace('号码', '').replace('s', '3').replace('O', '0').replace('i', '1')
+                    self.res.update(No)
+                    break
 
     def address(self):
         """
