@@ -43,14 +43,6 @@ class IdCard(object):
                 self.res.update(name)
                 break
 
-        # # 匹配身份证姓名
-        # res = re.findall("[\u4e00-\u9fa5]{1,4}", txt)
-        #
-        # if len(res) > 0:
-        #     name['姓名'] = res[0].replace('姓名', '').replace('名', '')
-        #     self.res.update(name)
-        #     # break
-
     def nation(self):
         """
         民族汉

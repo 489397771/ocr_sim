@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
-
 from flask import Flask, request, jsonify
 
 from idcard import ocr_id_card
