@@ -33,16 +33,23 @@ class IdCard(object):
         身份证姓名
         """
         name = {}
-        # for i in range(self.N):
-        txt = self._re_sub(self.result[0])
+        for i in range(self.N):
+            txt = self._re_sub(self.result[i])
+            # 民族汉
+            res = re.findall(".*姓.*名[\u4e00-\u9fa5]+", txt)
 
-        # 匹配身份证姓名
-        res = re.findall("[\u4e00-\u9fa5]{1,4}", txt)
+            if len(res) > 0:
+                name["姓名"] = res[0].replace('姓名', '').replace('名', '')
+                self.res.update(name)
+                break
 
-        if len(res) > 0:
-            name['姓名'] = res[0].replace('姓名', '').replace('名', '')
-            self.res.update(name)
-            # break
+        # # 匹配身份证姓名
+        # res = re.findall("[\u4e00-\u9fa5]{1,4}", txt)
+        #
+        # if len(res) > 0:
+        #     name['姓名'] = res[0].replace('姓名', '').replace('名', '')
+        #     self.res.update(name)
+        #     # break
 
     def nation(self):
         """
@@ -144,6 +151,7 @@ def ocr_id_card(img_path):
 
     logging.info('id_card predict start')
     results = model.get_answer(img)
+    print(results)
     idcard = IdCard(results)
     if len(idcard.res.keys()) < 3:
         return {'error': '上传图片错误或者无法识别，请重新上传或手动填写'}
