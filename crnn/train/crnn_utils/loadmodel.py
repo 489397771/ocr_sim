@@ -3,8 +3,8 @@ import numpy as np
 from importlib import reload
 from PIL import Image
 
-from keras.models import Model
-from keras.layers import Input
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input
 # import keys
 # import densenet
 from crnn_utils import densenet, keys
@@ -31,7 +31,7 @@ else:
 def decode(pred):
     char_list = []
     pred_text = pred.argmax(axis=2)[0]
-    print(pred_text)
+    # print(pred_text)
     for i in range(len(pred_text)):
         if pred_text[i] != nclass and (not (i > 0 and pred_text[i - 1])) or (
                 i > 1 and pred_text[i] == pred_text[i - 2]):

@@ -4,7 +4,9 @@ import numpy as np
 from PIL import Image
 
 import tensorflow.compat.v1 as tf
-from keras.applications.vgg16 import preprocess_input, VGG16
+
+from tensorflow.python.keras.backend import set_session
+from tensorflow.keras.applications.vgg16 import preprocess_input, VGG16
 
 tf.disable_v2_behavior()
 
@@ -16,15 +18,20 @@ def load_model():
     return model
 
 
-model = load_model()
+sess = tf.Session()
 graph = tf.get_default_graph()
+set_session(sess)
+model = load_model()
 
 
 def predict(img=None):
     """
     图片文字方向预测
     """
+    global sess
+    global graph
     with graph.as_default():
+        set_session(sess)
         ROTATE = [0, 270, 180, 90]
         im = Image.fromarray(img).convert('RGB')
         w, h = im.size
@@ -39,12 +46,21 @@ def predict(img=None):
     return ROTATE[index]
 
 
-def main(path):
+def angle_image(path):
     img = cv.imread(path)
     angle = predict(img=img)
-    print(angle)
+    im = Image.fromarray(img)
+    # print(angle)
+    if angle == 90:
+        im = im.transpose(Image.ROTATE_90)
+    elif angle == 180:
+        im = im.transpose(Image.ROTATE_180)
+    elif angle == 270:
+        im = im.transpose(Image.ROTATE_270)
+    img = np.array(im)
+    return img
 
 
 if __name__ == '__main__':
     img_path = r'/Users/cipher/Documents/work/ocr_sim/ctpn/data/idcard/2020-06-24 214059(47).jpg'
-    main(img_path)
+    angle_image(img_path)

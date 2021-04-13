@@ -113,7 +113,7 @@ class pascal_voc(imdb):
         if os.path.exists(cache_file):
             with open(cache_file, 'rb') as fid:
                 roidb = pickle.load(fid)
-            print('{} gt roidb loaded from {}'.format(self.name, cache_file))
+            # print('{} gt roidb loaded from {}'.format(self.name, cache_file))
             return roidb
 
         gt_roidb = [
@@ -121,7 +121,7 @@ class pascal_voc(imdb):
         ]
         with open(cache_file, 'wb') as fid:
             pickle.dump(gt_roidb, fid, pickle.HIGHEST_PROTOCOL)
-        print('wrote gt roidb to {}'.format(cache_file))
+        # print('wrote gt roidb to {}'.format(cache_file))
 
         return gt_roidb
 
@@ -138,7 +138,7 @@ class pascal_voc(imdb):
         if os.path.exists(cache_file):
             with open(cache_file, 'rb') as fid:
                 roidb = pickle.load(fid)
-            print('{} ss roidb loaded from {}'.format(self.name, cache_file))
+            # print('{} ss roidb loaded from {}'.format(self.name, cache_file))
             return roidb
 
         if int(self._year) == 2007 or self._image_set != 'test':
@@ -149,7 +149,7 @@ class pascal_voc(imdb):
             roidb = self._load_selective_search_roidb(None)
         with open(cache_file, 'wb') as fid:
             pickle.dump(roidb, fid, pickle.HIGHEST_PROTOCOL)
-        print('wrote ss roidb to {}'.format(cache_file))
+        # print('wrote ss roidb to {}'.format(cache_file))
 
         return roidb
 
@@ -165,7 +165,7 @@ class pascal_voc(imdb):
 
     def _load_rpn_roidb(self, gt_roidb):
         filename = self.config['rpn_file']
-        print('loading {}'.format(filename))
+        # print('loading {}'.format(filename))
         assert os.path.exists(filename), \
             'rpn data not found at: {}'.format(filename)
         with open(filename, 'rb') as f:
@@ -272,7 +272,7 @@ class pascal_voc(imdb):
         for cls_ind, cls in enumerate(self.classes):
             if cls == '__background__':
                 continue
-            print('Writing {} VOC results file'.format(cls))
+            # print('Writing {} VOC results file'.format(cls))
             filename = self._get_voc_results_file_template().format(cls)
             with open(filename, 'wt') as f:
                 for im_ind, index in enumerate(self.image_index):

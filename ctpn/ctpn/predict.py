@@ -59,7 +59,7 @@ def ctpn(sess, net, image_name):
     timer.tic()
     scores, boxes = test_ctpn(sess, net, im)
     timer.toc()
-    print('Detection took {:.3f}s for {:d} object proposals'.format(timer.total_time, boxes.shape[0]))
+    # print('Detection took {:.3f}s for {:d} object proposals'.format(timer.total_time, boxes.shape[0]))
 
     # Visualize detections for each class
     CONF_THRESH = 0.9

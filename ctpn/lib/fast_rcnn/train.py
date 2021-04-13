@@ -20,10 +20,10 @@ class SolverWrapper(object):
         self.output_dir = output_dir
         self.pretrained_model = pretrained_model
 
-        print('Computing bounding-box regression targets...')
+        # print('Computing bounding-box regression targets...')
         if cfg.TRAIN.BBOX_REG:
             self.bbox_means, self.bbox_stds = rdl_roidb.add_bbox_regression_targets(roidb)
-        print('done')
+        # print('done')
 
         # For checkpoint
         self.saver = tf.train.Saver(max_to_keep=100, write_version=tf.train.SaverDef.V2)

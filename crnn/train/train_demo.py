@@ -12,10 +12,10 @@ tf.disable_v2_behavior()
 from PIL import Image
 # from keras import backend as K
 import tensorflow.compat.v1.keras.backend as K
-from keras.layers import Input
-from keras.layers.core import Lambda
-from keras.models import Model
-from keras.callbacks import ModelCheckpoint, TensorBoard
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Lambda
+from tensorflow.keras.models import Model
+from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 
 from importlib import reload
 from crnn_utils import densenet2, keys

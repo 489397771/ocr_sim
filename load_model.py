@@ -1,17 +1,14 @@
 import os
-from glob import glob
 
-import numpy as np
 import cv2 as cv
+import numpy as np
 import tensorflow.compat.v1 as tf
 
-from PIL import Image
 from math import degrees, atan2, fabs, cos, sin, radians
 
-from keras.layers import Input
-from keras.models import Model
-
-from angle.predict import predict as angle_detect
+from PIL import Image
+from tensorflow.keras.layers import Input
+from tensorflow.keras.models import Model
 
 from crnn.train.crnn_utils import keys
 from crnn.train.crnn_utils.densenet import dense_cnn
@@ -22,9 +19,6 @@ from ctpn.ctpn.detectors import TextDetector as Detector
 from ctpn.lib.networks.factory import get_network
 from ctpn.lib.fast_rcnn.config import cfg
 from ctpn.lib.fast_rcnn.test import test_ctpn
-
-from idcard import IdCard
-from lawyerLicense import LQC
 
 tf.disable_v2_behavior()
 
@@ -170,78 +164,3 @@ class EndToEndPredict(object):
         self.__session.close()
         self.sess.close()
         del self.__rmodel, self.__session, self.sess
-
-
-def ocr_result(img_path):
-
-    img = cv.imread(img_path)
-
-    angle = angle_detect(img=img)
-    im = Image.fromarray(img)
-    if angle == 90:
-        im = im.transpose(Image.ROTATE_90)
-    elif angle == 180:
-        im = im.transpose(Image.ROTATE_180)
-    elif angle == 270:
-        im = im.transpose(Image.ROTATE_270)
-    img = np.array(im)
-
-    print('predict start')
-
-    model = EndToEndPredict()
-    model.load()
-    results = model.get_answer(img)
-    # print(results)
-    idcard = IdCard(results)
-    # print(idcard.res)
-    if len(idcard.res.keys()) < 3:
-        return {'error': '上传图片错误或者无法识别，请重新上传或手动填写'}
-
-    return idcard.res
-
-
-def ocr_bar_license(img_path):
-
-    img = cv.imread(img_path)
-
-    angle = angle_detect(img=img)
-    im = Image.fromarray(img)
-    if angle == 90:
-        im = im.transpose(Image.ROTATE_90)
-    elif angle == 180:
-        im = im.transpose(Image.ROTATE_180)
-    elif angle == 270:
-        im = im.transpose(Image.ROTATE_270)
-    img = np.array(im)
-
-    print('predict start')
-
-    model = EndToEndPredict()
-    model.load()
-    results = model.get_answer(img)
-    # print(results)
-    # print('--' * 100)
-    lqc = LQC(results)
-    if len(lqc.res.keys()) < 3:
-        return {'error': '上传图片错误或者无法识别，请重新上传或手动填写'}
-
-    return lqc.res
-
-
-def main():
-    img_path = r'/Users/cipher/Documents/work/ocr_sim/ctpn/data/idcard/*.jpg'
-    with open('ocr_result.txt', 'a', encoding='utf-8') as ocr_r:
-
-        for imgPath in glob(img_path):
-            name = imgPath.split('2020-')[1]
-            result = ocr_result(imgPath)
-            ocr_r.write('name:{} \n result:{}\n'.format(name, result))
-            print('{} ocr success'.format(name))
-
-
-if __name__ == '__main__':
-    # main()
-    # img_path = r'/Users/cipher/Documents/work/ocr_sim/ctpn/data/demo/5.jpeg'
-    img_path = r'/Users/cipher/Documents/work/ocr_sim/ctpn/data/1-1/21.jpg'
-
-    print(ocr_bar_license(img_path))

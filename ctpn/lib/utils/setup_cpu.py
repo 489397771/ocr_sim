@@ -49,7 +49,7 @@ def customize_compiler_for_nvcc(self):
     default_compiler_so = self.compiler_so
     super = self._compile
     def _compile(obj, src, ext, cc_args, extra_postargs, pp_opts):
-        print(extra_postargs)
+        # print(extra_postargs)
         """
         if os.path.splitext(src)[1] == '.cu':
             # use the cuda for .cu files

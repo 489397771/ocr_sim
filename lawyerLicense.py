@@ -1,4 +1,10 @@
+import logging
 import re
+from load_model import EndToEndPredict
+from angle.predict import angle_image
+
+model = EndToEndPredict()
+model.load()
 
 
 class LQC(object):
@@ -180,3 +186,23 @@ class LQC(object):
                 day['发证日期'] = res[0].replace('年', '-').replace('月', '-').replace('日', '')
                 self.res.update(day)
                 break
+
+
+def ocr_bar_license(img_path):
+
+    img = angle_image(img_path)
+
+    logging.info('bar license predict start')
+    model = EndToEndPredict()
+    model.load()
+    results = model.get_answer(img)
+    lqc = LQC(results)
+    if len(lqc.res.keys()) < 3:
+        return {'error': '上传图片错误或者无法识别，请重新上传或手动填写'}
+
+    return lqc.res
+
+
+if __name__ == "__main__":
+    img_path = r'/Users/cipher/Documents/work/ocr_sim/ctpn/data/1-1/21.jpg'
+    print(ocr_bar_license(img_path))
